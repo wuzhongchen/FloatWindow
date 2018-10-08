@@ -5,14 +5,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_gravity="start"
+        android:background="#B0E0E6"
+        android:layout_width="240dp"
+        android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/menu_float_window"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:clickable="false">
+        <ImageView
+            android:id="@+id/float_icon"
+            android:src="@drawable/menu_float"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="20dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
+        <TextView
+            android:layout_toEndOf="@id/float_icon"
+            android:text="Control ball"
+            android:textSize="14sp"
+            android:textColor="#de000000"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ToggleButton
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="10dp"
+            android:padding="6dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/toggle_button"
+            android:layout_width="30dp"
+            android:layout_height="15dp"
+            android:background="@drawable/toggle_draw"
+            android:textOn="@null"
+            android:textOff="@null" />
+    </RelativeLayout>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
