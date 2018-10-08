@@ -2,6 +2,8 @@ package com.example.wuzhongcheng.floatwindow;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.WindowManager;
 
@@ -14,11 +16,15 @@ class MyWindowManager {
 
     public static void updateWindowStatus(Context context, Boolean isActivitySurface) {
         WindowManager windowManager = getWindowManager(context);
-        int screenWidth = windowManager.getDefaultDisplay().getWidth();
-        int screenHeight = windowManager.getDefaultDisplay().getHeight();
+        Point outSize = new Point();
+        Display display = windowManager.getDefaultDisplay();
+        display.getSize(outSize);
+        int screenWidth = outSize.x;
+        int screenHeight = outSize.y;
 
         if(sFloatView == null && !isActivitySurface && KEY_IS_TOGGLE_BUTTON) {
             sFloatView = FloatWindowView.getInstance(context);
+            sFloatView.setImgToPause();
             if(sLayoutParams == null) {
                 sLayoutParams = new WindowManager.LayoutParams();
                 sLayoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
@@ -32,17 +38,10 @@ class MyWindowManager {
             }
             sFloatView.setParams(sLayoutParams);
             windowManager.addView(sFloatView, sLayoutParams);
-            MediaPlayerService.registerListener(FloatWindowView.getInstance(context));
         } else if(sFloatView != null) {
             windowManager.removeView(sFloatView);
             sFloatView = null;
             FloatWindowView.getInstance(context).reset();
-        }
-
-        if (MediaPlayerService.mIsPlaying) {
-            FloatWindowView.getInstance(getApplicationContext()).setImgToPlay();
-        } else {
-            FloatWindowView.getInstance(getApplicationContext()).setImgToPause();
         }
     }
 

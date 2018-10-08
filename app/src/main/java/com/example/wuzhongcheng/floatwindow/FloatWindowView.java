@@ -7,13 +7,14 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.lang.reflect.Field;
 
-public class FloatWindowView extends LinearLayout implements MediaPlayerService.AudioStateListener{
+public class FloatWindowView extends LinearLayout {
     
     public static int viewWidth;
     public static int viewHeight;
@@ -37,6 +38,7 @@ public class FloatWindowView extends LinearLayout implements MediaPlayerService.
     View mBackGround;
     LayoutParams mRightParams;
     Context mContext;
+    boolean isPlay = false;
 
     public static FloatWindowView getInstance(Context mContext) {
         if (floatWindowView == null) {
@@ -67,47 +69,34 @@ public class FloatWindowView extends LinearLayout implements MediaPlayerService.
 
     public void setImgToPause() {
         mPlayImg.setImageResource(R.drawable.stopmusic_btn);
+        isPlay = false;
     }
 
     public void setImgToPlay() {
         mPlayImg.setImageResource(R.drawable.window_pause);
+        isPlay = true;
     }
 
     private void removeClickListener() {
-        mNextImg.setClickable(false);
-        mBackImg.setClickable(false);
         mPlayImg.setClickable(false);
         mCancelImg.setClickable(false);
     }
 
     private void initClickListener() {
-        mNextImg.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent("toNextMusic", null, mContext.getApplicationContext(), CustomNotificationReceiver.class);
-                mContext.sendBroadcast(intent);
-            }
-        });
-        mBackImg.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent("toBackMusic", null, mContext.getApplicationContext(), CustomNotificationReceiver.class);
-                mContext.sendBroadcast(intent);
-            }
-        });
         mPlayImg.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent("playMusic", null, mContext.getApplicationContext(), CustomNotificationReceiver.class);
-                mContext.sendBroadcast(intent);
-                CustomNotificationUtils.getInstance(mContext).showNotification(mContext);
+                if(isPlay){
+                    setImgToPause();
+                } else {
+                    setImgToPlay();
+                }
             }
         });
         mCancelImg.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                MediaPlayerService.unregisterListener(FloatWindowView.getInstance(mContext));
-                MyWindowManager.updateWindowStatus(getApplicationContext(),true);
+                MyWindowManager.updateWindowStatus(mContext,true);
             }
         });
     }
@@ -151,20 +140,38 @@ public class FloatWindowView extends LinearLayout implements MediaPlayerService.
         return true;
     }
 
+    public float dip2px(Context context, float dpValue) {
+        if (context != null && context.getResources() != null && context.getResources().getDisplayMetrics() != null) {
+            final float scale = context.getResources().getDisplayMetrics().density;
+            return  dpValue * scale + 0.5f;
+        } else {
+            return dpValue * 3; //default value
+        }
+    }
+
+    public void setPosition(View view, int top, int left, int width, int height) {
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams)view.getLayoutParams();
+        lp.topMargin = top;
+        lp.leftMargin = left;
+        lp.width = width;
+        lp.height = height;
+        view.setLayoutParams(lp);
+    }
+
     private void setRightParams() {
-        mRightParams.width = (int) CommonUtils.dip2px(mContext,200);
+        mRightParams.width = (int) dip2px(mContext,200);
         mParentView.setLayoutParams(mRightParams);
 
     }
 
     private void removeRightParams() {
-        mRightParams.width = (int) CommonUtils.dip2px(mContext,40);
+        mRightParams.width = (int) dip2px(mContext,40);
         mParentView.setLayoutParams(mRightParams);
     }
 
     public void reset() {
         isStretch = false;
-        ViewUtil.setPosition(mBackGround, mBackGround.getTop(), mBackGround.getLeft()/* + offsetX*/, 60, mBackGround.getMeasuredHeight());
+        setPosition(mBackGround, mBackGround.getTop(), mBackGround.getLeft()/* + offsetX*/, 60, mBackGround.getMeasuredHeight());
         removeRightParams();
     }
 
@@ -174,8 +181,7 @@ public class FloatWindowView extends LinearLayout implements MediaPlayerService.
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int width = (int) animation.getAnimatedValue();
-
-                ViewUtil.setPosition(mBackGround, mBackGround.getTop(), mBackGround.getLeft()/* + offsetX*/, 540 - width, mBackGround.getMeasuredHeight());
+                setPosition(mBackGround, mBackGround.getTop(), mBackGround.getLeft()/* + offsetX*/, 540 - width, mBackGround.getMeasuredHeight());
             }
         });
         valAnim.setDuration(600);
@@ -211,7 +217,7 @@ public class FloatWindowView extends LinearLayout implements MediaPlayerService.
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int width = (int) animation.getAnimatedValue();
-                ViewUtil.setPosition(mBackGround, mBackGround.getTop(), mBackGround.getLeft()/* + offsetX*/, width, mBackGround.getMeasuredHeight());
+                setPosition(mBackGround, mBackGround.getTop(), mBackGround.getLeft()/* + offsetX*/, width, mBackGround.getMeasuredHeight());
             }
         });
         valAnim.setDuration(600);
@@ -265,14 +271,5 @@ public class FloatWindowView extends LinearLayout implements MediaPlayerService.
             }
         }
         return statusBarHeight;
-    }
-
-    @Override
-    public void audioStateChanged(MediaPlayerService.AudioState state) {
-        if (state == MediaPlayerService.AudioState.STOP) {
-            FloatWindowView.getInstance(mContext.getApplicationContext()).setImgToPause();
-        } else {
-            FloatWindowView.getInstance(mContext.getApplicationContext()).setImgToPlay();
-        }
     }
 }

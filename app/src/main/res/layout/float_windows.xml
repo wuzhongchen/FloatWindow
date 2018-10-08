@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#00000000">
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="40dp"
+        android:background="@drawable/left_back"/>
+
+    <RelativeLayout
+        android:id="@+id/blank"
+        android:background="@drawable/backbtn"
+        android:layout_width="20dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp">
+        <ImageView
+            android:id="@+id/tv_inbox"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:padding="15dp"
+            android:src="@drawable/backmusic_btn" />
+
+        <ImageView
+            android:id="@+id/tv_addSchedule"
+            android:layout_marginLeft="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="15dp"
+            android:src="@drawable/stopmusic_btn" />
+
+        <ImageView
+            android:id="@+id/tv_note"
+            android:layout_marginLeft="90dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="15dp"
+            android:src="@drawable/nextmusic_btn" />
+
+        <ImageView
+            android:id="@+id/tv_cancel"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="130dp"
+            android:padding="12dp"
+            android:src="@drawable/float_cancel" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/image_display_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/window_icon" />
+
+</RelativeLayout>
